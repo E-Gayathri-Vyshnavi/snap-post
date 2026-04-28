@@ -1,17 +1,18 @@
 // lib/prisma.ts
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient as PrismaClientType } from "@prisma/client";
+import * as PrismaModule from "@prisma/client";
 
-// This is the standard singleton pattern for Next.js 15+
+// Use the module's exported PrismaClient
+const PrismaClient = PrismaModule.PrismaClient;
+
 const prismaClientSingleton = () => {
   return new PrismaClient();
 };
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+declare global {
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+}
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
+export const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
