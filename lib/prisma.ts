@@ -1,13 +1,15 @@
 // lib/prisma.ts
-import * as Prisma from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
-// Use the Prisma namespace to get the type
-const PrismaClient = Prisma.PrismaClient;
+const prismaClientSingleton = () => {
+  return new PrismaClient();
+};
 
-const globalForPrisma = global as unknown as { prisma: InstanceType<typeof PrismaClient> };
+declare global {
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+}
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient();
+// @ts-ignore
+export const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
