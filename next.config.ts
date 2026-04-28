@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@prisma/client"], // 👈 Add this line
+  // This is the key fix for Next.js 15/16 + Prisma
+  serverExternalPackages: ["@prisma/client"], 
 };
 
 export default nextConfig;
