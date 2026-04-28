@@ -1,13 +1,16 @@
 // lib/prisma.ts
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
+
+// If the above still fails, try this alternative:
+// import Prisma from '@prisma/client';
+// const PrismaClient = Prisma.PrismaClient;
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-export const prisma = 
-  globalForPrisma.prisma || 
+export const prisma =
+  globalForPrisma.prisma ||
   new PrismaClient({
-    // We explicitly pass the URL here for Prisma 7
-    datasourceUrl: process.env.POSTGRES_PRISMA_URL, 
+    datasourceUrl: process.env.POSTGRES_PRISMA_URL,
   });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
